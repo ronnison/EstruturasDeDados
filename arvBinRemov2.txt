@@ -1,0 +1,175 @@
+import java.lang.Exception;
+
+class ArvoreBinaria {
+    class No {
+        private int valor;
+        private No esq;
+        private No dir;
+        
+        public No (int valor){
+            this.valor = valor;
+            this.esq = null;
+            this.dir = null;
+        }
+        
+        public int getValor(){
+            return this.valor;
+        }
+        
+        public void setValor(int valor){
+            this.valor = valor;
+        }
+        
+        public No getNoEsq(){
+            return this.esq;
+        }
+        
+        public void setNoEsq(No esq){
+            this.esq = esq;
+        }
+        
+        public No getNoDir(){
+            return this.dir;
+        }
+        
+        public void setNoDir(No dir){
+            this.dir = dir;
+        }
+    }
+    
+    private No raiz;
+    
+    public No getNoRaiz(){
+        return this.raiz;
+    }
+    
+    public ArvoreBinaria(){
+        this.raiz = null;
+    }
+    
+    public boolean isEmpty(){
+        return this.raiz == null;
+    }
+    
+    public void inserir(int valor){
+        inserir(this.raiz, valor);
+    }
+    
+    private void inserir(No no, int valor){
+        if(this.isEmpty()){
+            this.raiz = new No(valor);
+        } else {
+            if(valor < no.getValor()){
+                if(no.getNoEsq() != null) {
+                    inserir(no.getNoEsq(), valor);
+                } else { //no.setNoEsq(new No(valor));
+                    No novo = new No(valor);
+                    no.setNoEsq(novo);
+                }
+            } else if(valor > no.getValor()){
+                if(no.getNoDir() != null) {
+                    inserir(no.getNoDir(), valor);
+                } else {
+                    no.setNoDir(new No(valor));
+                }
+            }
+        }
+    }
+    
+    public No remover(int valor) throws Exception{
+        return remover(this.raiz, valor);
+    }
+    
+    private No remover(No no, int valor) throws Exception{
+        if(no == null){
+            throw new Exception("Arvore vazia");
+        } else {
+            if(valor < no.getValor()){
+                 no.setNoEsq(remover(no.getNoEsq(), valor));
+            } else if( valor > no.getValor()){
+                no.setNoDir(remover(no.getNoDir(), valor));
+            } else if(no.getNoEsq() != null && no.getNoDir() != null){
+                System.out.println("Remover o no: " + no.getValor());
+                no.setValor(encontraMinimo(no.getNoDir()).getValor());
+                no.setNoDir(removeMinimo(no.getNoDir()));
+            } else {
+                System.out.println("Remover o no: " + no.getValor());
+                no = (no.getNoEsq() != null) ? no.getNoEsq() : no.getNoDir();
+            }
+        }
+        return no;
+    }
+    private No encontraMinimo(No no){
+        if(no != null){
+            while(no.getNoEsq() != null) {
+                no = no.getNoEsq();
+            }
+        }
+        return no;
+    }
+    private No removeMinimo(No no){
+        if(no != null) {
+            if(no.getNoEsq() != null) {
+                no.setNoEsq(removeMinimo(no.getNoEsq()));
+                return no;
+            }
+        }
+        return no.getNoDir();
+    }
+    
+    public void imprimeArvore(){
+        imprimeArvore(this.raiz);
+    }
+    
+    private void imprimeArvore(No no){
+        if(no == null) {
+            System.out.println("Arvore vazia");
+        } else {
+            if(no.getNoEsq() != null) {
+                imprimeArvore(no.getNoEsq());
+            }
+            if (no.getNoDir() != null){
+                imprimeArvore(no.getNoDir());
+            } 
+                System.out.println("No: " + no.getValor());
+            
+        }
+    }
+    
+}
+public class Main
+{
+	public static void main(String[] args)  throws Exception{
+	    ArvoreBinaria ab = new ArvoreBinaria();
+	    System.out.println(ab.isEmpty());
+	    ab.inserir(20);
+	    ab.inserir(10);
+	    ab.inserir(33);
+	    ab.inserir(6);
+	    ab.inserir(8);
+	    ab.inserir(15);
+	    ab.inserir(13);
+	    ab.inserir(18);
+	    ab.inserir(33);
+	    ab.inserir(25);
+	    ab.inserir(55);
+	    ab.inserir(28);
+	    ab.inserir(44);
+	    ab.inserir(60);
+	    ab.inserir(37);
+	    
+	    ab.imprimeArvore();
+	    
+	    System.out.println(ab.remover(8).getValor());
+	    
+	    ab.imprimeArvore();
+	    
+	    System.out.println(ab.remover(25).getValor());
+	    
+	    ab.imprimeArvore();
+	    
+	    System.out.println(ab.remover(33).getValor());
+	    
+	    ab.imprimeArvore();
+	}
+}

@@ -1,0 +1,246 @@
+import java.util.Random;
+
+class ArvoreBinaria {
+    class No {
+        private int valor;
+        private No esq;
+        private No dir;
+        
+        public No (int valor){
+            this.valor = valor;
+            this.esq = null;
+            this.dir = null;
+        }
+        
+        public int getValor(){
+            return this.valor;
+        }
+        
+        public void setValor(int valor){
+            this.valor = valor;
+        }
+        
+        public No getNoEsq(){
+            return this.esq;
+        }
+        
+        public void setNoEsq(No esq){
+            this.esq = esq;
+        }
+        
+        public No getNoDir(){
+            return this.dir;
+        }
+        
+        public void setNoDir(No dir){
+            this.dir = dir;
+        }
+    }
+    
+    private No raiz;
+    
+    public ArvoreBinaria(){
+        this.raiz = null;
+    }
+    
+    public boolean isEmpty(){
+        return this.raiz == null;
+    }
+    
+    public void imprimirArvore(){
+        if(this.raiz == null)
+            System.out.println("Árvore vazia");
+        else
+            imprimirArvore(this.raiz);
+    }
+    
+    private void imprimirArvore(No node){
+        if(node.getNoEsq() != null){
+            imprimirArvore(node.getNoEsq());
+        }
+        if (node.getNoDir() != null){
+            imprimirArvore(node.getNoDir());
+        }
+        System.out.println("Nó: " + node.getValor());
+    }
+
+    
+    public void inserir(int valor) {
+        inserir(this.raiz, valor);
+    }
+    
+    private void inserir(No no, int valor){
+        if(no == null){
+            this.raiz = new No(valor);
+        } else {
+            if(valor < no.getValor()) {
+                if(no.getNoEsq() != null) {
+                    inserir(no.getNoEsq(), valor);
+                } else {
+                    no.setNoEsq(new No(valor));
+                }
+            } else if (valor > no.getValor()){
+                if(no.getNoDir() != null) {
+                    inserir(no.getNoDir(), valor);
+                } else {
+                    no.setNoDir(new No(valor));
+                }
+            }
+        }
+    }
+    
+    public No remover(int valor) throws Exception{
+        return remover(this.raiz, valor);
+    }
+    
+    private No remover(No node, int valor) throws Exception{
+        if(this.raiz == null){
+            throw new Exception("Árvore vazia");
+        } else {            
+            if(valor < node.getValor()){
+                node.setNoEsq(remover(node.getNoEsq(), valor));
+            } else if(valor > node.getValor()){
+                node.setNoDir(remover(node.getNoDir(), valor));
+            } else if (node.getNoEsq() != null && node.getNoDir() != null) {
+                /2 filhos/  
+                System.out.println("  Removeu No " + node.getValor());
+                node.setValor(encontraMinimo(node.getNoDir()).getValor());
+                node.setNoDir(removeMinimo(node.getNoDir()));
+            } else {
+                System.out.println("  Removeu No " + node.getValor());  
+                node = (node.getNoEsq() != null) ? node.getNoEsq() : node.getNoDir();  
+            }  
+            return node;
+        }
+    }
+    private No encontraMinimo(No node) {  
+        if (node != null) {  
+            while (node.getNoEsq() != null) {  
+                node = node.getNoEsq();  
+            }  
+        }  
+        return node;  
+    }
+    private No removeMinimo(No node) {  
+        if (node == null) {  
+            System.out.println("  ERRO ");  
+        } else if (node.getNoEsq() != null) {  
+            node.setNoEsq(removeMinimo(node.getNoEsq()));  
+            return node;  
+        } else {
+            return node.getNoDir();  
+        }  
+        return null;  
+    } 
+    
+    public void caminhar() {
+    System.out.print("\n Exibindo em ordem: ");
+    inOrder(this.raiz);
+    System.out.print("\n Exibindo em pos-ordem: ");
+    posOrder(this.raiz);
+    System.out.print("\n Exibindo em pre-ordem: ");
+    preOrder(this.raiz);
+    System.out.print("\n Altura da arvore: " + altura(this.raiz));
+    System.out.print("\n Quantidade de folhas: " + folhas(this.raiz));
+    System.out.print("\n Quantidade de Nós: " + contarNos(this.raiz));
+    if (this.raiz != null ) {  // se arvore nao esta vazia
+       System.out.print("\n Valor minimo: " + min().getValor());
+       System.out.println("\n Valor maximo: " + max().getValor());
+    }
+  }
+
+  public void inOrder(No atual) {
+    if (atual != null) {
+      inOrder(atual.getNoEsq());
+      System.out.print(atual.getValor() + " ");
+      inOrder(atual.getNoDir());
+    }
+  }
+  
+  public void preOrder(No atual) {
+    if (atual != null) {
+      System.out.print(atual.getValor() + " ");
+      preOrder(atual.getNoEsq());
+      preOrder(atual.getNoDir());
+    }
+  }
+  
+  public void posOrder(No atual) {
+    if (atual != null) {
+      posOrder(atual.getNoEsq());
+      posOrder(atual.getNoDir());
+      System.out.print(atual.getValor() + " ");
+    }
+  }  
+  
+  public int altura(No atual) {
+     if(atual == null || (atual.getNoEsq() == null && atual.getNoDir() == null))
+       return 0;
+     else {
+   	if (altura(atual.getNoEsq()) > altura(atual.getNoDir()))
+   	   return ( 1 + altura(atual.getNoEsq()) );
+   	else
+	   return ( 1 + altura(atual.getNoDir()) );
+     }
+  }
+  
+  public int folhas(No atual) {
+    if(atual == null) return 0;
+    if(atual.getNoEsq() == null && atual.getNoDir() == null) return 1;
+    return folhas(atual.getNoEsq()) + folhas(atual.getNoDir());
+  }
+  
+  public int contarNos(No atual) {
+   if(atual == null)  return 0;
+   else return ( 1 + contarNos(atual.esq) + contarNos(atual.dir));
+  }
+
+  public No min() {
+    No atual = this.raiz;
+    No anterior = null;
+    while (atual != null) {
+      anterior = atual;
+      atual = atual.getNoEsq();
+    }
+    return anterior;
+  }
+
+  public No max() {
+    No atual = this.raiz;
+    No anterior = null;
+    while (atual != null) {
+      anterior = atual;
+      atual = atual.getNoDir();
+    }
+    return anterior;
+  }
+  
+}
+public class Main
+{
+	public static void main(String[] args)  throws Exception{
+	    ArvoreBinaria ab = new ArvoreBinaria();
+	    Random rand = new Random();
+	    
+	    /*for(int i = 0; i < 10; i++) {
+	        ab.inserir(rand.nextInt(100));
+	    }*/
+	    
+	    ab.inserir(12);
+	    ab.inserir(7);
+	    ab.inserir(15);
+	    ab.inserir(5);
+	    ab.inserir(8);
+	    ab.inserir(13);
+	    ab.inserir(18);
+	    ab.inserir(4);
+	    
+	    ab.remover(7);
+	    
+	    ab.imprimirArvore();
+	    
+	    System.out.println(ab.isEmpty());
+	    ab.caminhar();
+
+	}
+}

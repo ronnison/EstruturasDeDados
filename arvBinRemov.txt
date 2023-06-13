@@ -1,0 +1,118 @@
+class ArvoreBinaria {
+    class No {
+        private int valor;
+        private No esq;
+        private No dir;
+        
+        public No (int valor){
+            this.valor = valor;
+            this.esq = null;
+            this.dir = null;
+        }
+        
+        public int getValor(){
+            return this.valor;
+        }
+        
+        public void setValor(int valor){
+            this.valor = valor;
+        }
+        
+        public No getNoEsq(){
+            return this.esq;
+        }
+        
+        public void setNoEsq(No esq){
+            this.esq = esq;
+        }
+        
+        public No getNoDir(){
+            return this.dir;
+        }
+        
+        public void setNoDir(No dir){
+            this.dir = dir;
+        }
+    }
+    
+    private No raiz;
+    
+    public No getNoRaiz(){
+        return this.raiz;
+    }
+    
+    public ArvoreBinaria(){
+        this.raiz = null;
+    }
+    
+    public boolean isEmpty(){
+        return this.raiz == null;
+    }
+    
+    public void inserir(int valor){
+        inserir(this.raiz, valor);
+    }
+    
+    private void inserir(No no, int valor){
+        if(this.isEmpty()){
+            this.raiz = new No(valor);
+        } else {
+            if(valor < no.getValor()){
+                if(no.getNoEsq() != null) {
+                    inserir(no.getNoEsq(), valor);
+                } else { //no.setNoEsq(new No(valor));
+                    No novo = new No(valor);
+                    no.setNoEsq(novo);
+                }
+            } else if(valor > no.getValor()){
+                if(no.getNoDir() != null) {
+                    inserir(no.getNoDir(), valor);
+                } else {
+                    no.setNoDir(new No(valor));
+                }
+            }
+        }
+    }
+    
+    public No remover(int valor) {
+        return remover(this.raiz, valor);
+    }
+    
+    private No remover(No no, int valor) throws Exception{
+        if(no.isEmpty()){
+            throw new Exception("Árvore vazia");
+        } else {
+            if(valor < no.getValor()){
+                 no.setNoEsq(remover(no.getNoEsq(), valor));
+            } else if( valor > no.getValor()){
+                no.setNoDir(remover(no.getNoDir(), valor));
+            } else if(no.getNoEsq() != null && no.getNoDir() != null){
+                
+            } else {
+                System.out.println("Remover o no: " + no.getValor());
+                no = (no.getNoEsq() != null) ? no.getNoEsq() : no.getNoDir();
+            }
+            return no;
+        }
+    }
+    
+    private No encontraMinimo()
+    /*
+    public void imprimeArvore(){
+        imprimeArvore(this.raiz);
+    }
+    
+    private void imprimeArvore(No no){
+        
+    }
+    */
+}
+public class Main
+{
+	public static void main(String[] args)  throws Exception{
+	    ArvoreBinaria ab = new ArvoreBinaria();
+	    System.out.println(ab.isEmpty());
+	    ab.inserir(5);
+
+	}
+}
